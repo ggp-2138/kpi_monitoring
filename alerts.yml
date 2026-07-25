@@ -1,0 +1,57 @@
+groups:         #告警规则组
+  - name: instance_alerts         #规则组名称
+    rules:
+      - alert: HighCPU        #告警规则名称
+        #整体 CPU 使用率连续 1 分钟 > 50% 则触发告警
+        expr: round(100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100), 2) > 50
+        for: 1m       #持续 1 分钟则触发告警
+        labels:       #告警附加标签(用于告警路由、分级、模板展示)
+          severity: critical          #告警级别
+        annotations:      #告警注解
+          summary: "宿主机CPU使用率超过 {{ $value }}%"
+          description: "实例 {{ $labels.instance }} CPU当前使用率 {{ $value }}%"
+          
+      - alert: MySQLSlowQueries
+        expr: increase(mysql_global_status_slow_queries[5m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MySQL慢查询数增加"
+          description: "实例 {{ $labels.instance }} 产生新增慢查询"
+
+      - alert: NginxDown
+        expr: up{job="nginx"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nginx Exporter失联"
+          description: "实例 {{ $labels.instance }} Nginx采集中断"
+
+      - alert: HostMemoryLow
+        expr: node_memory_MemFree_bytes / node_memory_MemTotal_bytes < 0.05
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "宿主机空闲内存极低"
+          description: "实例 {{ $labels.instance }} 空闲内存不足5%，存在OOM风险"
+
+      - alert: HostHighMemoryUsage
+        expr: round((1 - (node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes) * 100) > 60
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "宿主机内存使用率过高"
+          description: "实例 {{ $labels.instance }} 内存当前使用率 {{ $value }}%"
+
+      - alert: HostDiskHighUsage
+        expr: round((1 - node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100) > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "宿主机根磁盘使用率过高"
+          description: "实例 {{ $labels.instance }} 根分区使用率超过80%"

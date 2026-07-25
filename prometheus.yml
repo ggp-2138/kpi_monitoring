@@ -1,0 +1,30 @@
+global:             #全局配置
+  scrape_interval: 15s      #抓取间隔
+
+#抓取任务配置
+scrape_configs:          
+  - job_name: 'app_g1'      #任务名称
+    static_configs:           #静态目标配置
+      - targets: ['app_g1:8080']      #监控端点
+  
+  - job_name: 'node'
+    static_configs:
+      - targets: ['xxx:9100']    #监控宿主机的CPU、内存、磁盘、网络等
+  
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql-exporter:9104']
+  
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+
+
+rule_files:       #规则配置文件
+  - 'alerts.yml'
+
+#告警对接配置
+alerting:
+  alertmanagers:      #实例
+    - static_configs:         
+        - targets: ['alertmanager:9093']
