@@ -16,7 +16,7 @@
 ## 1. 项目简介
 基于 **Docker Compose** 一键部署 **Prometheus** + 多**Exporter** + **Alertmanager** + 钉钉告警中转服务，实现宿主机、**Nginx**、 **MySQL** 指标采集与告警推送；额外封装 **FastAPI MAD** 统计算法，实现应用 **API** 延迟智能异常检测，双告警链路覆盖固定阈值+时序离群检测
 
-Demo视频：bilibili.com/video/BV1Qe3M63EoX
+Demo视频：`bilibili.com/video/BV1Qe3M63EoX`
 
 ### 核心功能
 - **多维度指标采集**：宿主机**CPU**/内存/磁盘、**MySQL**慢查询、**Nginx** 采集器运行状态、自定义业务接口延迟直方图
