@@ -1,9 +1,0 @@
-global:
-  resolve_timeout: 5m       #告警恢复超时时间
-route:                    #告警路由(所有告警默认走这条根路由)
-  receiver: 'dingtalk'
-receivers:
-  - name: 'dingtalk'
-    webhook_configs:
-      - url: 'http://xxx/dingtalk/webhook1/send'     #钉钉中转服务的地址
-        send_resolved: true       #告警恢复时发送通知
