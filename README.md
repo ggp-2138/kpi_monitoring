@@ -106,44 +106,60 @@ Prometheus → scheduler.py 定时拉取指标 → anomaly_service (FastAPI) →
 ### 3. 项目目录结构
 ```
 kpi_monitoring/
-|
-├── docker-compose.yml      # 容器编排主配置
-|
-├── prometheus.yml          # Prometheus 抓取配置
-|
-├── alerts.yml              # 告警规则定义
-|
-├── alertmanager.yml        # 告警路由
-|
-├── nginx.conf              # Nginx stub_status 指标暴露配置
-|
-├── mysql-exporter.cnf      # MySQL Exporter 连接凭证
-|
-├── dingtalk.yml            # 钉钉中转模板与签名
-|
-├── app_g1/                 # Demo 业务应用（暴露 /metrics）
-|     |
-│     ├── Dockerfile
-|     |
-│     ├── requirements.txt
-|     |
-│     └── app.py
-|
-├── anomaly_service.py      # FastAPI MAD 异常检测接口
-|
-├── scheduler.py            # 智能巡检调度脚本
-|
-├── week1_data_pull.py      # 历史指标数据拉取测试脚本
-|
-├── logs/                   # 运行日志目录
-|
-|── dashboard_json          #仪表板json文件
-|
-|── run_scheduler.sh        #定时脚本
-|
-|── stress_test.sh          #压力测试脚本
-|
-└── README.md                 
+├── .github/workflows/
+│   │
+│   └── g1.yml                          # GitHub‑Actions CI/CD流水线配置
+│
+├── app_g1/                              # Demo业务应用，提供metrics指标接口
+│   │
+│   ├── .dockerignore                   # Docker打包忽略文件配置
+│   │
+│   ├── app.py                          # 业务Demo服务
+│   │
+│   ├── Dockerfile                       # 业务服务镜像构建脚本
+│   │
+│   └── requirements.txt                # Demo程序Python依赖包
+│   
+├── dashboard_json/                     # Grafana仪表盘json存放目录
+│
+├── docker/                               # 所有监控组件容器配置文件夹
+│   │
+│   ├── alertmanager.yml                 # Alertmanager告警分发、钉钉路由配置
+│   │
+│   ├── alerts.yml                        # Prometheus告警阈值规则
+│   │
+│   ├── dingtalk.yml                      # 钉钉机器人推送配置、加签参数
+│   │
+│   ├── docker‑compose.yml               # 整套监控服务容器编排
+│   │
+│   ├── mysql‑exporter.cnf               # mysql‑exporter数据库连接配置
+│   │
+│   ├── nginx.conf                        # Nginx指标采集stub‑status配置
+│   │
+│   └── prometheus.yml                    # Prometheus监控任务抓取配置
+│
+├── scripts/                              # 运维Shell脚本目录
+│   │
+│   ├── run_scheduler.sh                 # 巡检任务启动脚本
+│   │
+│   └── stress_test.sh                    # 项目压力测试脚本
+│
+├── src/                                   # 项目核心Python源码
+│   │
+│   ├── anomaly_service.py                # FastAPI MAD算法异常检测服务
+│   │
+│   ├── scheduler.py                       # 定时全链路巡检调度程序
+│   │
+│   └── week1_data_pull.py                # Prometheus历史时序数据拉取脚本
+│
+├── tests/                                # 单元测试存放目录
+|    │
+|    └── test_mad.py                       # 单元测试程序
+│
+├── requirements.txt                       # 项目全局Python依赖清单
+│
+└── README.md                               # 项目架构、部署、功能说明文档
+        
 ```
 
 ## 4. 部署步骤

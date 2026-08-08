@@ -1,0 +1,19 @@
+# FastAPI 后端接口框架
+fastapi
+uvicorn
+
+# 参数校验
+pydantic
+
+# 数据分析、MAD异常算法计算
+pandas
+numpy
+
+# http网络请求，调用Prometheus、钉钉接口
+requests
+
+# Web‑Demo metrics服务（Flask）
+flask
+
+# prometheus指标暴露
+prometheus‑client
