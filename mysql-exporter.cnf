@@ -1,5 +1,0 @@
-[client]
-user=root
-password=12345
-host=mysql
-port=3306
