@@ -1,0 +1,20 @@
+targets:
+  webhook1:
+    url: ""   # webhook 地址
+    secret: ""   # 加签密钥
+    #.Status: 告警状态( firing 触发中/ resolved 已恢复); toUpper 是模板函数,将状态转成大写
+    #.CommonLabels.alertname: 告警名称，取自告警规则中的 alert 字段
+    # .xxx 均取自告警规则对应字段
+    #**详情**: 遍历本次分组内的所有告警，输出每条告警的详细描述
+    message:
+      title: "【Prometheus监控告警】{{ .Status | toUpper }}"
+      text: |
+        {{ range .Alerts }}
+        **状态**: {{ .Status | toUpper }}
+        **级别**: {{ index .Labels "severity" | default "未知" }}
+        **告警名称**: {{ index .Labels "alertname" | default "未知告警" }}
+        **摘要**: {{ index .Annotations "summary" | default "无摘要信息" }}
+        > 实例：{{ index .Labels "instance" | default "未指定" }}
+        > 详情：{{ index .Annotations "description" | default "无详情" }}
+        ---
+        {{ end }} 
