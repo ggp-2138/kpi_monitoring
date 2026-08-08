@@ -1,0 +1,32 @@
+name: test_mad
+
+# 触发时机：push推送代码、提交pull‑request时自动运行
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu‑latest
+    steps:
+      # 拉取仓库代码
+      - name: pull code
+        uses: actions/checkout@v4
+      # 配置Python环境
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # 安装依赖
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      # 代码格式检查
+      - name: Checkout code
+        run: pip install black && black --check .
+      # MAD异常算法单元测试
+      - name: MAD_test
+        run: python -m pytest tests/test_mad.py -v
