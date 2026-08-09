@@ -26,7 +26,7 @@ jobs:
           pip install -r requirements.txt
           pip install prometheus-client black
       # 代码格式检查
-      - name: Checkout code
+      - name: Python代码格式校验
         run: black --check .
       # MAD异常算法单元测试
       - name: MAD_test
