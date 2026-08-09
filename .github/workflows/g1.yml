@@ -14,20 +14,61 @@ jobs:
       # 拉取仓库代码
       - name: pull code
         uses: actions/checkout@v4
+
       # 配置Python环境
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       # 安装依赖
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install prometheus-client black pytest
+
       # 代码格式检查
       - name: Python代码格式校验
         run: black --check .
+
       # MAD异常算法单元测试
       - name: MAD_test
         run: python -m pytest tests/test_mad.py -v
+
+      # 登录Docker‑Hub镜像仓库
+      - name: 登录Docker‑Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      # 构建镜像
+      - name: 本地构建项目镜像
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/app_g1:latest ./app_g1
+
+      # 推送镜像到云端仓库
+      - name: 推送镜像至Docker‑Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/app_g1:latest
+      
+      # 5. 远程一键无缝部署（CD 环节）
+      - name: Remote Zero-Downtime Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # 1. 判断 test_cicd 目录是否存在，不存在则首次克隆
+            if [ ! -d "test_cicd" ]; then
+                git clone https://github.com/${{ github.repository }}.git test_cicd
+            else
+                cd test_cicd && git pull origin main
+            fi
+
+            # 2. 进入项目内的 docker 目录
+            cd test_cicd/docker
+
+            # 3. 拉取镜像 + 无缝重启
+            docker compose up -d --pull always --remove-orphans
+
+            # 4. 检查服务状态
+            docker ps -a
+            echo "✅ CI/CD 自动化部署完成"
