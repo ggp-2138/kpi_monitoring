@@ -16,4 +16,4 @@ requests
 flask
 
 # prometheus指标暴露
-prometheus‑client
+prometheus-client
