@@ -14,6 +14,3 @@ requests
 
 # Web‑Demo metrics服务（Flask）
 flask
-
-# prometheus指标暴露
-prometheus-client
