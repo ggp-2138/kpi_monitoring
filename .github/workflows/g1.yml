@@ -24,10 +24,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install prometheus-client
+          pip install prometheus-client black
       # 代码格式检查
       - name: Checkout code
-        run: pip install black && black --check .
+        run: black --check .
       # MAD异常算法单元测试
       - name: MAD_test
         run: python -m pytest tests/test_mad.py -v
