@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu‑latest
+    runs-on: self-hosted
     steps:
       # 拉取仓库代码
       - name: pull code
