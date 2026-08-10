@@ -50,7 +50,7 @@ jobs:
       
       # 5. 远程一键无缝部署（CD 环节）
       - name: Remote Zero-Downtime Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.SSH_HOST }}
           port: 7001
