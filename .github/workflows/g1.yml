@@ -69,7 +69,7 @@ jobs:
             cd test_cicd/docker
 
             # 3. 拉取镜像 + 无缝重启
-            docker compose up -d --pull always --remove-orphans
+            docker compose -p test_cicd up -d --pull always --remove-orphans
 
             # 4. 检查服务状态
             docker ps -a
