@@ -49,29 +49,29 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/app_g1:latest
       
       # 5. 远程一键无缝部署（CD 环节）
-      - name: Remote Zero-Downtime Deploy via SSH
-        uses: appleboy/ssh-action@v1.1.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: 7001
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          debug: true
-          script: |
-            # 1. 判断 test_cicd 目录是否存在，不存在则首次克隆
-            PROJECT_ROOT="/home/hadoop/test_cicd"
-            [ ! -d "${PROJECT_ROOT}" ] && git clone https://github.com/${{ github.repository }}.git "${PROJECT_ROOT}"
+      # - name: Remote Zero-Downtime Deploy via SSH
+      #   uses: appleboy/ssh-action@v1.1.0
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     port: 7001
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_KEY }}
+      #     debug: true
+      #     script: |
+      #       # 1. 判断 test_cicd 目录是否存在，不存在则首次克隆
+      #       PROJECT_ROOT="/home/hadoop/test_cicd"
+      #       [ ! -d "${PROJECT_ROOT}" ] && git clone https://github.com/${{ github.repository }}.git "${PROJECT_ROOT}"
 
-            # 2. 更新仓库
-            cd "${PROJECT_ROOT}"
-            git fetch origin
-            git reset --hard origin/main
-            cd docker
+      #       # 2. 更新仓库
+      #       cd "${PROJECT_ROOT}"
+      #       git fetch origin
+      #       git reset --hard origin/main
+      #       cd docker
 
-            # 3. 拉取镜像 + 无缝重启
-            # --remove-orphans 生产环境禁用
-            docker compose -p test_cicd up -d --pull always --remove-orphans
+      #       # 3. 拉取镜像 + 无缝重启
+      #       # --remove-orphans 生产环境禁用
+      #       docker compose -p test_cicd up -d --pull always --remove-orphans
 
-            # 4. 检查服务状态
-            docker ps -a
-            echo "✅ CI/CD 自动化部署完成"
+      #       # 4. 检查服务状态
+      #       docker ps -a
+      #       echo "✅ CI/CD 自动化部署完成"
