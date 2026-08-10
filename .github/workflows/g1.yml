@@ -53,8 +53,10 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
+          port: 7001
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
+          debug: true
           script: |
             # 1. 判断 test_cicd 目录是否存在，不存在则首次克隆
             if [ ! -d "test_cicd" ]; then
