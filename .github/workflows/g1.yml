@@ -59,16 +59,17 @@ jobs:
           debug: true
           script: |
             # 1. 判断 test_cicd 目录是否存在，不存在则首次克隆
-            if [ ! -d "test_cicd" ]; then
-                git clone https://github.com/${{ github.repository }}.git test_cicd
-            else
-                cd test_cicd && git pull origin main
-            fi
+            PROJECT_ROOT="/home/hadoop/test_cicd"
+            [ ! -d "${PROJECT_ROOT}" ] && git clone https://github.com/${{ github.repository }}.git "${PROJECT_ROOT}"
 
-            # 2. 进入项目内的 docker 目录
-            cd test_cicd/docker
+            # 2. 更新仓库
+            cd "${PROJECT_ROOT}"
+            git fetch origin
+            git reset --hard origin/main
+            cd docker
 
             # 3. 拉取镜像 + 无缝重启
+            # --remove-orphans 生产环境禁用
             docker compose -p test_cicd up -d --pull always --remove-orphans
 
             # 4. 检查服务状态
